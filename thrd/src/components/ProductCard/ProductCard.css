@@ -1,0 +1,13 @@
+.shopping-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    background: #f9f9f9;
+  }
+  
+  .shopping-container::after {
+    content: '';
+    flex-grow: 1;
+  }
+  
