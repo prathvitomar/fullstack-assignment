@@ -1,19 +1,41 @@
-import React from 'react';
+import React from "react";
+import "./ProductCard.css";
 
-const ProductCard = ({ product }) => {
+function ProductCard({ product }) {
+  const { ProductName, StartDate, Image, Price, Category } = product;
+  console.log(product);
+
+  if (!product.ProductID) {
+    return null;
+  }
+
   return (
-    <div className="product-card">
-      <img
-        src="https://via.placeholder.com/200" // Replace with dynamic image if available
-        alt={product.ProductName}
-      />
-      <div className="product-info">
-        <h3>{product.ProductName}</h3>
-        <p>Category: {product.Category}</p>
-        <p className="price">Price: ${product.Price}</p>
+    <div className="ag-format-container">
+      <div className="ag-courses_box">
+        <div className="ag-courses_item">
+          <div className="ag-courses-item_link">
+            <div className="ag-courses-item_bg">{}</div>
+
+            <div className="ag-courses-item_title">{ProductName}</div>
+
+            <div className="ag-courses-item_date-box">
+              Category: <span className="ag-courses-item_date">{Category}</span>
+            </div>
+
+            <div className="ag-courses-item_date-box">
+              Price: <span className="ag-courses-item_date">{Price}</span>
+            </div>
+
+            {Image && (
+              <div className="ag-courses-item_image">
+                <img src={Image} alt={ProductName} />
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
-};
+}
 
 export default ProductCard;

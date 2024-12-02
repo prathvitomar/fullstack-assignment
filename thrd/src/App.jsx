@@ -1,47 +1,66 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./components/Login/Login";
-import ShoppingPage from "./components/";
+import { useEffect, useState } from "react";
 import { parseCSV } from "./utils/parseCSV";
+import Login from "./components/Login/Login";
+import ProductList from "./components/ProductList/ProductList";
 
 const App = () => {
   const [users, setUsers] = useState([]);
   const [products, setProducts] = useState([]);
   const [purchaseHistory, setPurchaseHistory] = useState([]);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [loggedInUser, setLoggedInUser] = useState(null);
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
-    const loadCSVData = async () => {
-      const usersData = await parseCSV("/data/users.csv");
-      const productsData = await parseCSV("/data/products.csv");
-      const purchaseHistoryData = await parseCSV("/data/purchase_history.csv");
+    const loadData = async () => {
+      const usersData = await parseCSV("/users.csv");
+      const productsData = await parseCSV("/products.csv");
+      const purchaseHistoryData = await parseCSV("/purchase_history.csv");
+
       setUsers(usersData);
       setProducts(productsData);
       setPurchaseHistory(purchaseHistoryData);
     };
 
-    loadCSVData();
+    loadData();
   }, []);
 
+
+  useEffect(() => {
+    if (loggedInUser) {
+      const userHistory = purchaseHistory.filter(
+        (p) => p.Username === loggedInUser.Username
+      );
+      const purchasedCategories = userHistory.map((p) => p.Category);
+  
+      const notPurchased = products.filter(
+        (p) => !purchasedCategories.includes(p.Category)
+      );
+      const purchased = products.filter((p) =>
+        purchasedCategories.includes(p.Category)
+      );
+  
+      const safeSort = (a, b) => {
+        const nameA = a.ProductName || ""; 
+        const nameB = b.ProductName || ""; 
+        return nameA.localeCompare(nameB);
+      };
+  
+      setFilteredProducts([
+        ...notPurchased.sort(safeSort),
+        ...purchased.sort(safeSort),
+      ]);
+    }
+  }, [loggedInUser, purchaseHistory, products]);
+  
+
   return (
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={<Login users={users} setCurrentUser={setCurrentUser} />}
-        />
-        <Route
-          path="/shopping"
-          element={
-            <ShoppingPage
-              currentUser={currentUser}
-              products={products}
-              purchaseHistory={purchaseHistory}
-            />
-          }
-        />
-      </Routes>
-    </Router>
+    <div className="app">
+      {loggedInUser ? (
+        <ProductList products={filteredProducts} />
+      ) : (
+        <Login users={users} onLogin={setLoggedInUser} />
+      )}
+    </div>
   );
 };
 

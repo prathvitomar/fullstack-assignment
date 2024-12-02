@@ -1,120 +1,107 @@
-// import React, { useState } from "react";
-// import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import "./Login.css";
 
-// const Login = ({ users, setCurrentUser }) => {
-//   const [username, setUsername] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [error, setError] = useState(null);
-//   const navigate = useNavigate();
-
-//   const handleLogin = () => {
-//     const user = users.find(
-//       (u) => u.username === username && u.password === password
-//     );
-
-//     if (user) {
-//       setCurrentUser(user);
-//       navigate("/shopping");
-//     } else {
-//       setError("Invalid username or password.");
-//     }
-//   };
-
-//   return (
-//     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-//       <div className="w-96 p-6 bg-white shadow-md rounded-lg">
-//         <h2 className="text-2xl font-bold text-center mb-4 text-gray-800">
-//           Login
-//         </h2>
-//         <input
-//           type="text"
-//           placeholder="Username"
-//           value={username}
-//           onChange={(e) => setUsername(e.target.value)}
-//           className="w-full p-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-//         />
-//         <input
-//           type="password"
-//           placeholder="Password"
-//           value={password}
-//           onChange={(e) => setPassword(e.target.value)}
-//           className="w-full p-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-//         />
-//         <button
-//           onClick={handleLogin}
-//           className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
-//         >
-//           Login
-//         </button>
-//         {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Login;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { users } from '../../../data/users.csv'; // Import mock data
-
-const LoginPage = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
+const Login = ({ users, onLogin }) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const handleLogin = () => {
-    const user = users.find((user) => user.username === username && user.password === password);
+    const user = users.find(
+      (u) => u.Username === username && u.Password === password
+    );
     if (user) {
-      localStorage.setItem('currentUser', JSON.stringify(user));
-      navigate('/shopping');
+      onLogin(user);
     } else {
-      setError('Invalid username or password');
+      setError("Invalid username or password.");
+      setUsername("");
+      setPassword("");
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
+
   return (
-    <div className="login-container">
-      <div className="login-box">
-        <h2>Login</h2>
+    <form className="form" autoComplete="off">
+      <div className="control">
+        <h1>Sign In</h1>
+      </div>
+      <div className="control block-cube block-input">
         <input
           type="text"
+          name="username"
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          required
         />
+        <div className="bg-top">
+          <div className="bg-inner"></div>
+        </div>
+        <div className="bg-right">
+          <div className="bg-inner"></div>
+        </div>
+        <div className="bg">
+          <div className="bg-inner"></div>
+        </div>
+      </div>
+      <div className="control block-cube block-input">
         <input
-          type="password"
+          type={passwordVisible ? "text" : "password"}
+          name="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
-        <button onClick={handleLogin}>Login</button>
-        {error && <p className="error">{error}</p>}
+        <button
+          type="button"
+          className="toggle-password"
+          onClick={togglePasswordVisibility}
+        >
+          {passwordVisible ? "Hide" : "Show"}
+        </button>
+        <div className="bg-top">
+          <div className="bg-inner"></div>
+        </div>
+        <div className="bg-right">
+          <div className="bg-inner"></div>
+        </div>
+        <div className="bg">
+          <div className="bg-inner"></div>
+        </div>
       </div>
-    </div>
+      <button
+        type="button"
+        className="btn block-cube block-cube-hover"
+        onClick={handleLogin}
+      >
+        <div className="bg-top">
+          <div className="bg-inner"></div>
+        </div>
+        <div className="bg-right">
+          <div className="bg-inner"></div>
+        </div>
+        <div className="bg">
+          <div className="bg-inner"></div>
+        </div>
+        <span className="text">Log In</span>
+      </button>
+      {error && <p className="error">{error}</p>}
+      <div className="credits">
+        <a
+          href="https://github.com/prathvitomar"
+          target="_blank"
+          rel="prathvi-singh-tomar"
+        >
+          <h2>Project by :</h2> <h1>Prathvi Singh Tomar</h1>
+        </a>
+      </div>
+    </form>
   );
 };
 
-export default LoginPage;
+export default Login;
